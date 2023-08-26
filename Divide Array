@@ -1,81 +1,80 @@
-	Input			
-	Main_Arr_DB	Array[*] of Real	
+FUNCTION "Divide_Array": Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION: 0.1
+   VAR_INPUT 
+      Main_Arr_DB : Array[*] of Real;
+   END_VAR
 
-	Output			
-	Avg_Sum	Real	
+   VAR_OUTPUT 
+      Avg_Sum : Real;
+   END_VAR
 
-	InOut			
-	Sub_Arr_1	Array[*] of Real		
-	Sub_Arr_2	Array[*] of Real	
+   VAR_IN_OUT 
+      Sub_Arr_1 : Array[*] of Real;
+      Sub_Arr_2 : Array[*] of Real;
+   END_VAR
 
-	Temp			
-	i	Int		
-	s	Int	
-
-	Constant			
-				
-	Return			
-	Divide_Array	Void		
-=================================================================================================================
-
-// get length of array
-#s := UPPER_BOUND(ARR := #Main_Arr_DB, DIM := 1);
-
-// Loop through the original Array
-FOR #i := 0 TO #s DO
-    
-    // Check if the index is less or bigger than half of the array
-    IF #i < ((#s/2)+1) THEN
-        // CPY values to sub-array 1
-        #Sub_Arr_1[#i] := #Main_Arr_DB[#i];
-    ELSE
-        // CPY values to sub-array 2
-        #Sub_Arr_2[#i - ((#s/2)+1)] := #Main_Arr_DB[#i];
-    END_IF;
-    
-END_FOR;
-
-// Calculate the average for the main data block
-"Calc_Avg"(Arr := "Main_DB".Array1,
-           Avg => "Main_DB".Avg);
-
-// Calculate the average for sub1 data block
-"Calc_Avg"(Arr := "Sub_DB1".Arr,
-           Avg => "Sub_DB1".Avg);
-
-// Calculate the average for sub2 data block
-"Calc_Avg"(Arr := "Sub_DB2".Arr,
-           Avg => "Sub_DB2".Avg);
-
-// Calculate the average for the sum using another function
-#Avg_Sum := "Calc_Avg2"(Arr := "Sub_DB1".Arr) + "Calc_Avg2"(Arr :="Sub_DB2".Arr);
+   VAR_TEMP 
+      i: Int;
+      s: Int;
+   END_VAR
 
 
----------------------------------------------------------------------------------------------------------------------
+BEGIN
+	// get length of array
+	#s := UPPER_BOUND(ARR := #Main_Arr_DB, DIM := 1);
+	
+	// Loop through the original Array
+	FOR #i := 0 TO #s DO
+	    
+	    // Check if the index is less or bigger than half of the array
+	    IF #i < ((#s/2)+1) THEN
+	        #Sub_Arr_1[#i] := #Main_Arr_DB[#i];
+	    ELSE
+	        #Sub_Arr_2[#i - ((#s/2)+1)] := #Main_Arr_DB[#i];
+	    END_IF;
+	    
+	END_FOR;
+	
+	"Calc_Avg"(Arr := "Main_DB".Array1,
+	           Avg => "Main_DB".Avg);
+	
+	"Calc_Avg"(Arr := "Sub_DB1".Arr,
+	           Avg => "Sub_DB1".Avg);
+	
+	"Calc_Avg"(Arr := "Sub_DB2".Arr,
+	           Avg => "Sub_DB2".Avg);
+	
+	#Avg_Sum := "Calc_Avg2"(Arr := "Sub_DB1".Arr) + "Calc_Avg2"(Arr :="Sub_DB2".Arr);
+	
+	
+END_FUNCTION
 
-	Input			
-	Arr	Array[*] of Real		
+=========================================================================================================
 
-	Output			
-				
-	InOut			
-				
-	Temp			
-	i	Int		
-	Sum	Real		
-	s	Int		
 
-	Constant			
-				
-	Return			
-	Calc_Avg2	Real		
-=============================================================================================================
+FUNCTION "Calc_Avg2": Real
+{ S7_Optimized_Access := 'TRUE' }
+VERSION: 0.1
+   VAR_INPUT 
+      Arr : Array[*] of Real;
+   END_VAR
 
-// get length of array
-#s := UPPER_BOUND(ARR := #Arr, DIM := 1);
+   VAR_TEMP 
+      i: Int;
+      Sum: Real;
+      s: Int;
+   END_VAR
 
-FOR #i := 0 TO #s DO
-    #Sum := #Sum + #Arr[#i];
-END_FOR;
 
-#Calc_Avg2 := #Sum / (#s + 1);
+BEGIN
+	// get length of array
+	#s := UPPER_BOUND(ARR := #Arr, DIM := 1);
+	
+	FOR #i := 0 TO #s DO
+	    #Sum := #Sum + #Arr[#i];
+	END_FOR;
+	
+	#Calc_Avg2 := #Sum / (#s + 1);
+END_FUNCTION
+
