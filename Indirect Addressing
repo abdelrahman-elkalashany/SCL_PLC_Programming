@@ -1,20 +1,43 @@
-IF #Type = 'I' THEN
-    #Memory_Type := 16#81;
-ELSIF #Type = 'Q' THEN
-    #Memory_Type := 16#82;
-ELSIF #Type = 'M' THEN
-    #Memory_Type := 16#83;
-END_IF;
+FUNCTION "Read_Bool_Mem_Indirect": Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION: 0.1
+   VAR_INPUT 
+      Mem: Int;
+      "Type": Char;
+      "byte": Int;
+   END_VAR
 
-FOR #j := #Mem TO #Mem+#byte DO
-    
-    FOR #i := 0 TO 7 DO
-        
-        "Data_block_move_indirect_address".array[#i+#a] := PEEK_BOOL(area := #Memory_Type, dbNumber := 0, byteOffset := #j, bitOffset := #i);
-        IF #i>=7 THEN
-            #a += 8;
-        END_IF;
-        
-    END_FOR;
-    
-END_FOR;
+   VAR_TEMP 
+      Memory_Type : Byte;
+      i: Int;
+      j: Int;
+      a: Int;
+   END_VAR
+
+
+BEGIN
+	IF #Type = 'I' THEN
+	    #Memory_Type := 16#81;
+	ELSIF #Type = 'Q' THEN
+	    #Memory_Type := 16#82;
+	ELSIF #Type = 'M' THEN
+	    #Memory_Type := 16#83;
+	END_IF;
+	
+	FOR #j := #Mem TO #Mem+#byte DO
+	    
+	    FOR #i := 0 TO 7 DO
+	        
+	        "Data_block_move_indirect_address".array[#i+#a] := PEEK_BOOL(area := #Memory_Type, dbNumber := 0, byteOffset := #j, bitOffset := #i);
+	        IF #i>=7 THEN
+	            #a += 8;
+	        END_IF;
+	        
+	    END_FOR;
+	    
+	END_FOR;
+	
+	
+	
+END_FUNCTION
+
