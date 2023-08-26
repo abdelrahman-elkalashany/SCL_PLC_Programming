@@ -2,7 +2,7 @@
 PLC programming using SCL.
 
 Demonstrating 
-1) IF ELSE conditions.
+1) IF ELSE condition Statments.
 2)  SWITCH CASE.
 3) Different types of Loops.
 4) Creating and using arrays.
